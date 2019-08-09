@@ -17,6 +17,7 @@ var itemArray = [
 ];
 
 generateItemHTML();
+
 var outputDiv = document.getElementById("output");
 
 function addToCart(index) {
@@ -26,6 +27,7 @@ function addToCart(index) {
   var num = inputBox.value;
   if(hasNegativeQty()) {
     warnUser();
+    setOutputCSS(true);
   } else {
     clearWarning();
     itemArray[index].qty = num;
@@ -96,10 +98,11 @@ function finalizeOrder() {
     clearWarning();
     outputDiv.innerHTML = "<p>Subotal:    $" + subtotal + "</p>";
     outputDiv.innerHTML += "<p>Total:    $" + roundTo2Places(total) + "</p>";
+    setOutputCSS(false);
   } else {
     warnUser();
+    setOutputCSS(true);
   }
-  
 }
 
 function roundTo2Places(num) {
@@ -120,4 +123,15 @@ function hasNegativeQty() {
   }
 
   return hasNegative;
+}
+
+function setOutputCSS(hidden) {
+
+  if(hidden) {
+    outputDiv.style.border = "none";
+    outputDiv.style.padding = "0px 0px";
+  } else {
+    outputDiv.style.border = "1px solid #032cfc";
+    outputDiv.style.backgroundColor = "#adbaff";
+  }
 }
