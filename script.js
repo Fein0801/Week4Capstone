@@ -17,16 +17,14 @@ var itemArray = [
 ];
 
 generateItemHTML();
+var outputDiv = document.getElementById("output");
 
 function addToCart(index) {
   var id = "qty" + index;
-
   var inputBox = document.getElementById(id);
-  console.log(id);
   
   var num = inputBox.value;
-  
-  if(num < 0) {
+  if(hasNegativeQty()) {
     warnUser();
   } else {
     clearWarning();
@@ -38,6 +36,7 @@ function warnUser() {
   var warningDiv = document.getElementById("warning");
   
   warningDiv.innerHTML = "<p>Please select a positive number</p>";
+  outputDiv.innerHTML = "";
 
   // Adds a border and padding
   warningDiv.style.border = "1px solid red";
@@ -87,21 +86,38 @@ function finalizeOrder() {
   var subtotal = 0;
   for(var i = 0; i < itemArray.length; i++) {
     addToCart(i);
-  }
-  for(var i = 0; i < itemArray.length; i++) {
     subtotal += itemArray[i].qty * itemArray[i].price;
   }
 
-  var outputDiv = document.getElementById("output");
   var tax = 0.06 * subtotal;
   var total = subtotal + tax;
 
-  outputDiv.innerHTML = "<p>Subotal:    $" + subtotal + "</p>";
-  outputDiv.innerHTML += "<p>Total:    $" + roundTo2Places(total) + "</p>";
+  if(!hasNegativeQty())  {
+    clearWarning();
+    outputDiv.innerHTML = "<p>Subotal:    $" + subtotal + "</p>";
+    outputDiv.innerHTML += "<p>Total:    $" + roundTo2Places(total) + "</p>";
+  } else {
+    warnUser();
+  }
+  
 }
 
 function roundTo2Places(num) {
   num *= 100;
   num = Math.round(num);
   return num / 100;
+}
+
+function hasNegativeQty() {
+  var hasNegative = false;
+  for(var i = 0; i < itemArray.length; i++) {
+    var id = "qty" + i;
+    var inputBox = document.getElementById(id);
+    var num = inputBox.value;
+    if(num < 0) {
+      hasNegative = true;
+    }
+  }
+
+  return hasNegative;
 }
